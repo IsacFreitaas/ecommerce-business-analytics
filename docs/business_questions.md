@@ -37,7 +37,7 @@ Each question follows this path:
 
 - **Purpose:** Identify growth, decline, seasonality, and periods that require investigation.
 - **Metrics:** Monthly sales value, distinct monthly orders, monthly units sold, and monthly AOV.
-- **Data:** `orders_processed.csv`; `OrderDate`, `OrderYear`, `OrderMonth`, `Sales`, `OrderValue`, `Quantity`.
+- **Data:** `orders_analytical.csv`; `OrderDate`, `OrderYear`, `OrderMonth`, `Sales`, `OrderValue`, `Quantity`.
 - **Pandas:** Aggregate by month, preserve chronological order, and compare period-over-period changes.
 - **SQL:** Use date truncation and window functions for monthly totals and growth rates.
 - **Power BI:** Line chart for sales and orders, with a secondary view for AOV.
@@ -47,7 +47,7 @@ Each question follows this path:
 
 - **Purpose:** Move from a ranking of periods to an explanation based on volume, units, price, and discount.
 - **Metrics:** Sales share, order share, units per order, average discount, and AOV by month or year.
-- **Data:** `orders_processed.csv`; `OrderDate`, `Quantity`, `Discount`, `UnitPrice`, `Sales`, `OrderValue`.
+- **Data:** `orders_analytical.csv`; `OrderDate`, `Quantity`, `Discount`, `UnitPrice`, `Sales`, `OrderValue`.
 - **Pandas:** Compare the top and bottom periods using a common metric table.
 - **SQL:** Rank periods with `DENSE_RANK` and calculate contribution percentages with window functions.
 - **Power BI:** Ranked column chart with drill-down to month and category.
