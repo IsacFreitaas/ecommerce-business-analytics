@@ -27,7 +27,7 @@ Each question follows this path:
 
 - **Purpose:** Establish the baseline used to evaluate every other result.
 - **Metrics:** Distinct orders, total units sold, total sales value, and average order value (AOV).
-- **Data:** `orders_processed.csv` or `clean_final_data.csv`; `OrderID`, `Quantity`, `Sales`, `OrderValue`, `OrderDate`, `Status`.
+- **Data:** `orders_analytical.csv`; `OrderID`, `Quantity`, `Sales`, `OrderValue`, `OrderDate`, `Status`.
 - **Pandas:** Build a validated KPI summary using distinct orders and an explicitly documented order-status scope.
 - **SQL:** Create an aggregate query with `COUNT(DISTINCT OrderID)`, `SUM(Quantity)`, `SUM(Sales or OrderValue)`, and AOV.
 - **Power BI:** KPI cards with a date filter and status filter.
@@ -59,7 +59,7 @@ Each question follows this path:
 
 - **Purpose:** Understand where sales are concentrated and which products deserve commercial attention.
 - **Metrics:** Sales value, sales share, distinct orders, units sold, and AOV by category and product.
-- **Data:** `clean_final_data.csv`; `ProductID`, `ProductName`, `Category`, `Quantity`, `Sales`, `OrderValue`.
+- **Data:** `orders_analytical.csv`; `ProductID`, `ProductName`, `Category`, `Quantity`, `Sales`, `OrderValue`.
 - **Pandas:** Produce category and product rankings with minimum-volume context.
 - **SQL:** Aggregate by category and product, then rank within the full dataset and by category.
 - **Power BI:** Category contribution chart and a product ranking table with slicers.
@@ -69,7 +69,7 @@ Each question follows this path:
 
 - **Purpose:** Separate high-demand products from high-price or high-value products.
 - **Metrics:** Units sold, distinct orders, sales value, average unit price, and sales rank versus volume rank.
-- **Data:** `clean_final_data.csv`; `ProductName`, `Category`, `Quantity`, `UnitPrice`, `Sales`.
+- **Data:** `orders_analytical.csv`; `ProductName`, `Category`, `Quantity`, `UnitPrice`, `Sales`.
 - **Pandas:** Compare rank correlation and identify products with large differences between volume and sales rank.
 - **SQL:** Use grouped aggregates and ranking functions.
 - **Power BI:** Scatter plot of units versus sales, colored by category, plus a detail table.
@@ -79,7 +79,7 @@ Each question follows this path:
 
 - **Purpose:** Assess whether higher discounts are associated with higher order value or volume, without claiming causality.
 - **Metrics:** Average discount, sales value, units sold, AOV, and order count by discount band or category.
-- **Data:** `clean_final_data.csv`; `Discount`, `Quantity`, `Sales`, `OrderValue`, `Category`.
+- **Data:** `orders_analytical.csv`; `Discount`, `Quantity`, `Sales`, `OrderValue`, `Category`.
 - **Pandas:** Create transparent discount bands and compare distributions and summary statistics.
 - **SQL:** Aggregate by discount band and category.
 - **Power BI:** Discount-band comparison and a scatter plot for discount versus order value.
@@ -91,7 +91,7 @@ Each question follows this path:
 
 - **Purpose:** Measure reach and dependence on a small number of customers.
 - **Metrics:** Unique purchasing customers, orders per customer, sales per customer, repeat-customer rate, and top-customer sales share.
-- **Data:** `clean_final_data.csv`; `CustomerID`, `OrderID`, `Sales`, `OrderValue`.
+- **Data:** `orders_analytical.csv`; `CustomerID`, `OrderID`, `Sales`, `OrderValue`.
 - **Pandas:** Build a customer-level table and segment customers by purchase frequency.
 - **SQL:** Aggregate to customer grain before calculating population-level metrics.
 - **Power BI:** Customer KPI cards, frequency distribution, and Pareto chart.
@@ -101,7 +101,7 @@ Each question follows this path:
 
 - **Purpose:** Compare one-time and repeat purchasing behavior.
 - **Metrics:** Customer count, orders per customer, sales per customer, AOV, and share of sales from repeat customers.
-- **Data:** `clean_final_data.csv`; `CustomerID`, `OrderID`, `OrderDate`, `Sales`, `OrderValue`.
+- **Data:** `orders_analytical.csv`; `CustomerID`, `OrderID`, `OrderDate`, `Sales`, `OrderValue`.
 - **Pandas:** Classify customers by distinct order count and compare the groups.
 - **SQL:** Use a customer-level CTE and aggregate the resulting cohorts.
 - **Power BI:** Side-by-side comparison of one-time and repeat customers.
@@ -111,7 +111,7 @@ Each question follows this path:
 
 - **Purpose:** Understand geographic and segment-level differences in value and volume.
 - **Metrics:** Customers, orders, sales value, AOV, and sales share by `CustomerSegment` and `City`.
-- **Data:** `clean_final_data.csv`; `CustomerSegment`, `City`, `CustomerID`, `OrderID`, `Sales`, `OrderValue`.
+- **Data:** `orders_analytical.csv`; `CustomerSegment`, `City`, `CustomerID`, `OrderID`, `Sales`, `OrderValue`.
 - **Pandas:** Compare segment and city rankings while reporting missing geographic values separately.
 - **SQL:** Join customer attributes at the correct grain and aggregate without duplicating orders.
 - **Power BI:** Segment comparison and ranked city table. A map is optional only if geographic fields are reliable.
