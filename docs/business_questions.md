@@ -8,7 +8,7 @@ The questions are intentionally limited to the information available in the data
 
 ## Analytical Conventions
 
-- The analytical grain is the order line in the processed transaction dataset. An `OrderID` may appear in more than one row when an order contains multiple products.
+- The current processed transaction dataset has one row per cleaned order. If future source data contains multiple products per order, order-level metrics must use distinct `OrderID` values and an explicit order-level aggregation.
 - Order-level metrics must use distinct `OrderID` values. Product and quantity metrics may use order-line rows.
 - `OrderValue` and `Sales` are transaction-level monetary fields created during data transformation. Their exact definitions must remain consistent with the data dictionary.
 - Unless stated otherwise, sales analyses use records with a valid `OrderDate` and report the period covered by the dataset.

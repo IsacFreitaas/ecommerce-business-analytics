@@ -2,32 +2,54 @@
 
 ## Overview
 
-This document describes the structure, meaning, and role of the datasets used in the e-commerce business analytics project.
+This document describes the datasets, columns, analytical grain, derived variables, and relationships used in the e-commerce business analytics project.
 
-The project contains four main datasets:
+The project currently contains four normalized datasets and one denormalized analytical dataset:
 
-- `Customers`: customer-level information.
-- `Orders`: transaction-level information.
-- `Payments`: payment records associated with orders.
-- `Products`: product-level information.
+- `customers_processed.csv`: one record per customer.
+- `orders_processed.csv`: one record per cleaned order in the current dataset snapshot.
+- `payments_processed.csv`: one record per payment record.
+- `products_processed.csv`: one record per product.
+- `clean_final_data.csv`: order-level analytical dataset enriched with customer and product attributes and financial variables.
 
-The processed `Orders` dataset also contains product attributes and derived temporal and financial variables created during the data cleaning and transformation stage.
+The raw files in `data/raw/` are preserved as the source layer. Processed files in `data/processed/` are generated from the cleaning and transformation workflow.
+
+## Analytical Grain
+
+### Orders
+
+In the current dataset snapshot, `orders_processed.csv` contains one row per `OrderID` after complete duplicate records were removed. Each order is associated with one `CustomerID` and one `ProductID` in the source data.
+
+This is a dataset-specific observation, not a universal e-commerce modeling rule. If future source data allows multiple products per order, the table must be treated as an order-line fact table and order-level metrics must use `COUNT(DISTINCT OrderID)` and explicit order-level aggregation.
+
+### Clean Final Data
+
+`clean_final_data.csv` is a denormalized analytical table at the current order grain. It combines order fields with customer attributes, product attributes, and derived financial fields. It is intended for exploratory analysis and visualization, while the normalized processed files are preferred for relational modeling and SQL joins.
+
+### Metric Grain Rules
+
+- Use `OrderID` as the order-level key.
+- Use distinct `OrderID` when counting orders.
+- Use `CustomerID` when counting customers.
+- Use `ProductID` when counting products.
+- Aggregate financial values at the order grain before comparing customers, products, categories, or segments.
+- Revalidate these rules if the source dataset changes.
 
 ## Customers
 
-The `Customers` dataset contains one record per customer and provides demographic, geographic, and segmentation information.
+`customers_processed.csv` contains one record per customer.
 
 | Column | Description | Data Type |
 | --- | --- | --- |
 | `CustomerID` | Unique identifier of the customer. | Integer |
-| `Age` | Age of the customer. | Numeric |
-| `City` | City associated with the customer. | String |
+| `Age` | Customer age. Missing values are preserved when the value is unavailable. | Numeric |
+| `City` | City associated with the customer. Missing values are preserved when the value is unavailable. | String |
 | `SignupDate` | Date when the customer registered. | Datetime |
 | `CustomerSegment` | Customer segment classification. | String |
 
 ## Orders
 
-The `Orders` dataset contains one record per order and represents the main transaction-level dataset used in the project.
+`orders_processed.csv` contains the cleaned order-level fields and derived calendar fields.
 
 ### Original Variables
 
@@ -35,63 +57,93 @@ The `Orders` dataset contains one record per order and represents the main trans
 | --- | --- | --- |
 | `OrderID` | Unique identifier of the order. | Integer |
 | `CustomerID` | Identifier of the customer associated with the order. | Integer |
-| `OrderDate` | Date when the order was placed. | Datetime |
+| `OrderDate` | Date when the order was placed. Missing values are preserved. | Datetime |
 | `ProductID` | Identifier of the product associated with the order. | Integer |
-| `Quantity` | Number of units purchased. | Numeric |
-| `Discount` | Discount applied to the order, represented as a decimal proportion. | Numeric |
-| `PaymentMethod` | Payment method associated with the order. | String |
-| `Status` | Current status of the order. | String |
+| `Quantity` | Number of units purchased. Missing values are preserved. | Numeric |
+| `Discount` | Discount proportion applied to the order. For example, `0.10` represents 10%. Missing values are preserved. | Numeric |
+| `PaymentMethod` | Payment method associated with the order. Missing values are preserved. | String |
+| `Status` | Current order status, such as `Completed`, `Cancelled`, or `Returned`. | String |
 
 ### Derived Variables
 
 | Column | Description | Data Type |
 | --- | --- | --- |
-| `OrderYear` | Year extracted from `OrderDate`. | Integer |
-| `OrderMonth` | Month number extracted from `OrderDate`. | Integer |
-| `OrderMonthName` | Month name extracted from `OrderDate`. | String |
-| `ProductName` | Name of the product associated with the order. | String |
-| `Category` | Product category associated with the order. | String |
-| `UnitPrice` | Unit price of the product at the transaction level. | Numeric |
-| `GrossAmount` | Total order value before applying the discount. | Numeric |
-| `DiscountAmount` | Monetary value of the discount. | Numeric |
-| `NetAmount` | Order value after applying the discount. | Numeric |
+| `OrderYear` | Calendar year extracted from `OrderDate`. | Integer |
+| `OrderMonth` | Calendar month number extracted from `OrderDate`. | Integer |
+| `OrderMonthName` | Calendar month name extracted from `OrderDate`. | String |
 
-* `Discount` is represented as a decimal proportion. For example, `0.10` represents a 10% discount.
+## Clean Final Data
+
+`clean_final_data.csv` contains the order fields plus customer and product attributes and financial variables.
+
+### Enriched Attributes
+
+| Column | Description | Data Type |
+| --- | --- | --- |
+| `Age` | Age of the associated customer. | Numeric |
+| `City` | City of the associated customer. | String |
+| `SignupDate` | Signup date of the associated customer. | Datetime |
+| `CustomerSegment` | Segment of the associated customer. | String |
+| `ProductName` | Name of the associated product. | String |
+| `Category` | Category of the associated product. | String |
+| `UnitPrice` | Unit price of the associated product. | Numeric |
+
+### Financial Variables
+
+The cleaning notebook initially calculates `GrossAmount`, `DiscountAmount`, and `NetAmount`. In the exported `clean_final_data.csv`, these values are represented by the following final column names:
+
+| Column | Definition | Formula |
+| --- | --- | --- |
+| `Sales` | Gross transaction value before applying the discount. | `Quantity * UnitPrice` |
+| `OrderValue` | Net transaction value after applying the discount. | `Sales - (Sales * Discount)` |
+
+These fields represent sales value, not profit. The dataset does not contain product cost, shipping cost, tax, or other expense fields.
 
 ## Payments
 
-The `Payments` dataset contains payment records associated with orders.
+`payments_processed.csv` contains one record per payment record.
 
 | Column | Description | Data Type |
 | --- | --- | --- |
 | `PaymentID` | Unique identifier of the payment record. | Integer |
-| `OrderID` | Identifier of the order associated with the payment. | Integer |
-| `PaymentDate` | Date when the payment was recorded. | Datetime |
-| `PaymentStatus` | Status of the payment. | String |
+| `OrderID` | Identifier of the associated order. | Integer |
+| `PaymentDate` | Date when the payment was recorded. Missing values are preserved. | Datetime |
+| `PaymentStatus` | Status of the payment record. | String |
 
-* The `Payments` dataset does not contain a monetary amount. Financial transaction values are calculated from `Quantity`, `UnitPrice`, and `Discount` in the processed `Orders` dataset.
+The Payments dataset does not contain a monetary amount. Financial values must be obtained from the order data and must not be invented from payment records.
 
 ## Products
 
-The `Products` dataset contains one record per product and provides product-level information.
+`products_processed.csv` contains one record per product.
 
 | Column | Description | Data Type |
 | --- | --- | --- |
 | `ProductID` | Unique identifier of the product. | Integer |
-| `ProductName` | Name of the product. | String |
+| `ProductName` | Product name. | String |
 | `Category` | Product category. | String |
 | `UnitPrice` | Price of one unit of the product. | Numeric |
 
 ## Dataset Relationships
 
-The datasets are connected through the following identifiers:
+| Relationship | Key | Cardinality | Description |
+| --- | --- | --- | --- |
+| Customers -> Orders | `CustomerID` | One-to-many | A customer can be associated with multiple orders. |
+| Products -> Orders | `ProductID` | One-to-many | A product can be associated with multiple orders. |
+| Orders -> Payments | `OrderID` | One-to-many in the model | An order can be associated with one or more payment records; this must be validated before aggregation. |
 
-| Relationship | Key | Description |
-| --- | --- | --- |
-| Customers → Orders | `CustomerID` | A customer can be associated with multiple orders. |
-| Products → Orders | `ProductID` | A product can be associated with multiple orders. |
-| Orders → Payments | `OrderID` | An order can be associated with a payment record. |
+The current raw snapshot contains orders whose `CustomerID` does not match a customer record. Analyses that require customer attributes must document how these unmatched orders are handled.
 
-The `Orders` dataset serves as the central transaction-level dataset, connecting customer, product, order, and payment-related information through their respective identifiers.
+## Data Quality and Scope Notes
 
-The processed `Orders` dataset also contains product attributes and transaction-level derived variables, making it suitable for subsequent exploratory and business analysis.
+- Complete duplicate records were removed from the Orders dataset during cleaning.
+- Missing values were preserved when the correct value could not be inferred reliably.
+- `Returned` is an order status, not a complete return event. Return date, return quantity, and refund amount are not available.
+- `clean_final_data.csv` is a derived analytical output and should be regenerated when the transformation logic changes.
+- The current exported files should be treated as the source of truth for available columns. Notebook prose may describe intermediate names that are not present in the exported files.
+
+## TODO
+
+- Add automated schema and row-count validation for every processed dataset.
+- Investigate and document why `clean_final_data.csv` contains fewer rows than `orders_processed.csv`.
+- Validate the exact cardinality between orders and payments before building the relational model.
+- Add a formal analytical data model once the SQL stage is implemented.
