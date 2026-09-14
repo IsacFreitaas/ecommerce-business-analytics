@@ -88,6 +88,9 @@ This is a dataset-specific observation, not a universal e-commerce modeling rule
 | `ProductName` | Name of the associated product. | String |
 | `Category` | Category of the associated product. | String |
 | `UnitPrice` | Unit price of the associated product. | Numeric |
+| `OrderYear` | Calendar year extracted from `OrderDate`. | Integer |
+| `OrderMonth` | Calendar month number extracted from `OrderDate`. | Integer |
+| `OrderMonthName` | Calendar month name extracted from `OrderDate`. | String |
 
 ### Financial Variables
 
@@ -96,6 +99,7 @@ The cleaning notebook initially calculates `GrossAmount`, `DiscountAmount`, and 
 | Column | Definition | Formula |
 | --- | --- | --- |
 | `Sales` | Gross transaction value before applying the discount. Missing when `Quantity` or `UnitPrice` is unavailable. | `Quantity * UnitPrice` |
+| `DiscountAmount` | Monetary value of the discount. Missing when a required input is unavailable. | `Sales * Discount` |
 | `OrderValue` | Net transaction value after applying the discount. Missing when a required input is unavailable. | `Sales - (Sales * Discount)` |
 
 These fields represent sales value, not profit. The dataset does not contain product cost, shipping cost, tax, or other expense fields.
