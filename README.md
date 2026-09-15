@@ -1,6 +1,8 @@
 # E-commerce Business Analytics
 
-An end-to-end data analytics portfolio project that transforms e-commerce operational data into structured business insights.
+An end-to-end data analytics project that transforms e-commerce operational data into structured business insights.
+
+<img src="images/project_banner.webp">
 
 ## Project Overview
 
@@ -90,6 +92,8 @@ ecommerce-business-analytics/
 ├── docs/                          # Business and data documentation
 │   ├── business_questions.md
 │   └── data_dictionary.md
+├── images/                        # Documentation images
+│   └── project_banner.webp
 ├── notebooks/                     # Exploratory project stages
 │   ├── 01_data_understanding.ipynb
 │   ├── 02_data_cleaning.ipynb
@@ -152,11 +156,13 @@ This command checks metric scopes, AOV consistency, group shares, customer aggre
 
 - [`docs/business_questions.md`](docs/business_questions.md) defines the questions, metrics, datasets, analyses, and expected decisions.
 - [`docs/data_dictionary.md`](docs/data_dictionary.md) defines dataset grain, columns, formulas, relationships, and limitations.
-- [`docs/analytical_metrics.md`](docs/analytical_metrics.md) defines the authoritative metric contract shared by Pandas, SQLAlchemy, PostgreSQL, and Power BI.
+- [`docs/analytical_metrics.md`](docs/analytical_metrics.md) defines the authoritative metric contract shared by `Pandas`, `SQLAlchemy`, `PostgreSQL`, and `Power BI`.
 - [`docs/local_setup.md`](docs/local_setup.md) explains environment setup, notebook execution, validation, and troubleshooting.
 - The notebooks document the reasoning and transformations used at each stage.
 
 ## Current Status
+
+### 🚧 **In Progress**
 
 The project currently includes:
 
@@ -166,8 +172,9 @@ The project currently includes:
 - Traceable business questions and data dictionary.
 - Processed-data validation.
 - Initial exploratory analysis for sales, products, customers, and payment reconciliation.
+- Authoritative analytical metric definitions and executable metric validation.
 
-The next development stage is to consolidate the final analytical metric definitions before implementing the SQL and Power BI layers.
+The next development stage is to implement the `SQL` and `Power BI` layers using the documented metric contract.
 
 ## Project Principles
 
