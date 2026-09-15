@@ -1,6 +1,8 @@
 # E-commerce Business Analytics
 
-An end-to-end data analytics portfolio project that transforms e-commerce operational data into structured business insights.
+An end-to-end data analytics project that transforms e-commerce operational data into structured business insights.
+
+<img src="images/project_banner.webp">
 
 ## Project Overview
 
@@ -90,6 +92,8 @@ ecommerce-business-analytics/
 ├── docs/                          # Business and data documentation
 │   ├── business_questions.md
 │   └── data_dictionary.md
+├── images/                        # Documentation images
+│   └── project_banner.webp
 ├── notebooks/                     # Exploratory project stages
 │   ├── 01_data_understanding.ipynb
 │   ├── 02_data_cleaning.ipynb
