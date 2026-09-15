@@ -144,6 +144,7 @@ The validator checks file presence, column schemas, key uniqueness, dataset rela
 
 - [`docs/business_questions.md`](docs/business_questions.md) defines the questions, metrics, datasets, analyses, and expected decisions.
 - [`docs/data_dictionary.md`](docs/data_dictionary.md) defines dataset grain, columns, formulas, relationships, and limitations.
+- [`docs/local_setup.md`](docs/local_setup.md) explains environment setup, notebook execution, validation, and troubleshooting.
 - The notebooks document the reasoning and transformations used at each stage.
 
 ## Current Status
