@@ -31,6 +31,8 @@ Each question follows this path:
 
 `Business question -> metric -> source fields -> Pandas analysis -> SQL query -> Power BI view -> insight or recommendation`
 
+Metric formulas and scopes are defined in [`docs/analytical_metrics.md`](analytical_metrics.md). That document is the source of truth when the same metric is implemented in Pandas, PostgreSQL, SQLAlchemy, or Power BI.
+
 ## Priority 1: Sales Performance
 
 ### Q1. What is the overall sales performance of the business?

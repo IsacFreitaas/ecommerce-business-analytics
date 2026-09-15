@@ -140,10 +140,19 @@ venv/bin/python scripts/validate_data.py
 
 The validator checks file presence, column schemas, key uniqueness, dataset relationships, and financial formulas. Known data-quality issues that do not invalidate the pipeline are reported as warnings.
 
+Validate the analytical metric invariants:
+
+```bash
+venv/bin/python scripts/validate_metrics.py
+```
+
+This command checks metric scopes, AOV consistency, group shares, customer aggregation, payment coverage, and operational status shares.
+
 ## Documentation
 
 - [`docs/business_questions.md`](docs/business_questions.md) defines the questions, metrics, datasets, analyses, and expected decisions.
 - [`docs/data_dictionary.md`](docs/data_dictionary.md) defines dataset grain, columns, formulas, relationships, and limitations.
+- [`docs/analytical_metrics.md`](docs/analytical_metrics.md) defines the authoritative metric contract shared by Pandas, SQLAlchemy, PostgreSQL, and Power BI.
 - [`docs/local_setup.md`](docs/local_setup.md) explains environment setup, notebook execution, validation, and troubleshooting.
 - The notebooks document the reasoning and transformations used at each stage.
 
