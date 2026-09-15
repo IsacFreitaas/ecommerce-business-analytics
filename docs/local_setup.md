@@ -68,6 +68,12 @@ On Windows PowerShell, use:
 
 The validator checks processed file presence, schemas, key uniqueness, relationships, and financial formulas. Known data-quality limitations are reported as warnings.
 
+Validate the metric definitions and their aggregation invariants:
+
+```bash
+venv/bin/python scripts/validate_metrics.py
+```
+
 ## Run the Notebooks
 
 Execute the notebooks in this order:

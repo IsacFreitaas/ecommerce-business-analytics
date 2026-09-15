@@ -140,6 +140,14 @@ venv/bin/python scripts/validate_data.py
 
 The validator checks file presence, column schemas, key uniqueness, dataset relationships, and financial formulas. Known data-quality issues that do not invalidate the pipeline are reported as warnings.
 
+Validate the analytical metric invariants:
+
+```bash
+venv/bin/python scripts/validate_metrics.py
+```
+
+This command checks metric scopes, AOV consistency, group shares, customer aggregation, payment coverage, and operational status shares.
+
 ## Documentation
 
 - [`docs/business_questions.md`](docs/business_questions.md) defines the questions, metrics, datasets, analyses, and expected decisions.
