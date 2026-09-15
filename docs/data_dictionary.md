@@ -4,6 +4,8 @@
 
 This document describes the datasets, columns, analytical grain, derived variables, and relationships used in the e-commerce business analytics project.
 
+Metric definitions and analytical scopes are maintained separately in [`docs/analytical_metrics.md`](analytical_metrics.md).
+
 The project currently contains four normalized datasets and one denormalized analytical dataset:
 
 - `customers_processed.csv`: one record per customer.
