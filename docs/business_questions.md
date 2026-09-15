@@ -6,6 +6,16 @@ This document defines the questions that will guide the exploratory analysis, SQ
 
 The questions are intentionally limited to the information available in the dataset. New questions may be added when a clear business need or a reliable data source justifies them.
 
+## Methodology and Assumptions
+
+- Each question must define its business purpose, metric, data source, analytical grain, validation rule, visualization, and expected decision.
+- The analysis uses the smallest appropriate grain for each metric and aggregates before comparing groups.
+- Missing values are reported and handled according to the metric requirements; they are not silently converted into zero.
+- `orders_analytical.csv` is the primary source for exploratory sales, product, and customer analysis. Normalized processed files are used when relationship validation or separate table analysis is required.
+- Monetary metrics use available values only and must state the records excluded from the calculation.
+- Results describe patterns and associations. Recommendations must not be presented as proof of causality.
+- Every final insight must state its scope, assumptions, and limitations.
+
 ## Analytical Conventions
 
 - The current processed transaction dataset has one row per cleaned order. If future source data contains multiple products per order, order-level metrics must use distinct `OrderID` values and an explicit order-level aggregation.
@@ -173,3 +183,12 @@ Before a question is considered answered, the project must contain:
 4. A Power BI visual specification or dashboard implementation.
 5. A concise insight that distinguishes observation from recommendation.
 6. A note about data limitations, assumptions, and excluded records.
+
+## Reporting Standard
+
+Each analysis should present its result in the following order:
+
+1. **Observation:** What the data shows.
+2. **Interpretation:** What the pattern may indicate within the available context.
+3. **Limitation:** What the data cannot establish.
+4. **Recommendation:** A possible business action or follow-up investigation.
