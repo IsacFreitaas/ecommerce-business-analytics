@@ -15,6 +15,18 @@ The project currently contains four normalized datasets and one denormalized ana
 
 The raw files in `data/raw/` are preserved as the source layer. Processed files in `data/processed/` are generated from the cleaning and transformation workflow.
 
+## Methodology and Assumptions
+
+The project uses the following analytical principles:
+
+- Raw datasets are treated as immutable source data. Cleaning decisions are implemented in the notebooks and exported to the processed layer.
+- The normalized processed files preserve the main entities, while `orders_analytical.csv` is used as the enriched exploratory dataset.
+- Each metric must be calculated at the grain required by the business question. Order, customer, product, and payment counts must not be mixed without an explicit aggregation step.
+- Missing values are not automatically replaced. A value is imputed only when the available data and business context provide a defensible rule; otherwise, it remains missing and is excluded or reported in the relevant analysis.
+- Financial metrics are calculated only from available source fields and represent sales value, not profitability.
+- Dataset relationships are validated before joins are used for analysis. Unmatched records are documented rather than silently discarded.
+- Exploratory findings describe observed distributions and associations. They are not causal conclusions.
+
 ## Analytical Grain
 
 ### Orders
@@ -35,6 +47,16 @@ This is a dataset-specific observation, not a universal e-commerce modeling rule
 - Use `ProductID` when counting products.
 - Aggregate financial values at the order grain before comparing customers, products, categories, or segments.
 - Revalidate these rules if the source dataset changes.
+
+### Metric Calculation Rules
+
+- **Distinct orders:** Count unique `OrderID` values.
+- **Units sold:** Sum non-missing `Quantity` values and report the excluded records.
+- **Sales value:** Sum non-missing `Sales` values.
+- **Net order value:** Sum non-missing `OrderValue` values.
+- **Average order value (AOV):** Divide total `OrderValue` by the number of distinct orders included in the same scope.
+- **Sales share:** Divide a group's `OrderValue` by the total `OrderValue` of the same analytical scope.
+- **Repeat customer:** A customer with more than one distinct `OrderID`.
 
 ## Customers
 
@@ -147,6 +169,17 @@ The current raw snapshot contains orders whose `CustomerID` does not match a cus
 - `orders_analytical.csv` is a derived analytical output and should be regenerated when the transformation logic changes.
 - `clean_final_data.csv` was supplied with the Kaggle dataset and is retained only as an external reference. It must not be used as an input or output of this project's pipeline.
 - The current exported files should be treated as the source of truth for available columns. Notebook prose may describe intermediate names that are not present in the exported files.
+
+## Analytical Exclusions
+
+An analysis must state its exclusions when a required field is missing or a relationship cannot be established. Typical exclusions include:
+
+- Records without a valid `OrderDate` in time-based analysis.
+- Records without `Quantity`, `UnitPrice`, or `Discount` in financial calculations that require those fields.
+- Orders without a matching customer record in customer-attribute analysis.
+- Payment records without a matching order in payment reconciliation.
+
+Excluded records remain part of the source and processed datasets unless a documented cleaning rule removes them. Exclusion from a metric does not mean deletion from the data layer.
 
 ## TODO
 

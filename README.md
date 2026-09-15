@@ -1,32 +1,37 @@
-# E-Commerce Business Analytics
+# E-commerce Business Analytics
+
+An end-to-end data analytics portfolio project that transforms e-commerce operational data into structured business insights.
 
 ## Project Overview
 
-* This project focuses on transforming raw e-commerce data into meaningful business insights.
+E-commerce companies generate large volumes of data across customers, orders, products, and payments. This project investigates how those datasets can be prepared, analyzed, and communicated to support business decisions.
 
-* The dataset contains information about customers, orders, products, and payments. The goal is to analyze the data, identify relevant patterns, and answer business questions related to sales performance, customer behavior, product performance, and payment operations.
-
-* The project will follow an end-to-end data analytics workflow, covering data understanding, data quality assessment, data cleaning, data modeling, SQL analysis, exploratory data analysis, and business intelligence visualization.
+The project follows a progressive workflow: first make the data reliable, then understand the business patterns, and finally communicate the results through SQL and Power BI.
 
 ## Business Problem
 
-* E-commerce companies generate large amounts of operational data. However, having access to data alone is not enough to support decision-making.
+The business has operational data but no consolidated analytical view of its performance. The analysis focuses on questions such as:
 
-* This project aims to explore how customer, order, product, and payment data can be transformed into actionable insights that support a better understanding of business performance.
+- Which products and categories generate the most sales value?
+- How are sales and order volume evolving over time?
+- How concentrated is the customer base?
+- What is the behavior of one-time and repeat customers?
+- Are order and payment records consistent?
+- Which operational areas deserve further investigation?
+
+The project describes patterns and associations in the data. It does not claim causality when the available data cannot support it.
 
 ## Project Objectives
 
-The main objectives of this project are:
+- Understand the structure, quality, and relationships of the source datasets.
+- Clean and transform the data while preserving traceability.
+- Build a reliable analytical dataset for exploratory analysis.
+- Answer the business questions defined in [`docs/business_questions.md`](docs/business_questions.md).
+- Reproduce the main analyses with PostgreSQL and SQL.
+- Create a Power BI semantic model and dashboard.
+- Document assumptions, limitations, insights, and recommendations.
 
-- Assess the quality and structure of the raw data.
-- Clean and prepare the data for analysis.
-- Model the data using a relational database.
-- Answer business questions using SQL.
-- Perform exploratory data analysis using Python.
-- Create visualizations to communicate the main findings.
-- Develop a business intelligence dashboard.
-
-## Planned **Pipeline**
+## Analytical Pipeline
 
 ```text
 Raw Data
@@ -37,89 +42,59 @@ Data Quality Assessment
     ↓
 Data Cleaning and Transformation
     ↓
-Relational Database
+Processed Datasets
+    ↓
+Business Questions
+    ↓
+Exploratory Data Analysis with Pandas
+    ↓
+Business Insights
+    ↓
+PostgreSQL Data Model
     ↓
 SQL Analysis
     ↓
-Exploratory Data Analysis
+Power BI Model and Dashboard
     ↓
-Business Intelligence Visualization
-    ↓
-Business Insights
+Final Portfolio Documentation
 ```
 
-```
-                    ┌─────────────┐
-                    │ RAW DATA    │
-                    │ CSV FILES   │
-                    └──────┬──────┘
-                           │
-                           ▼
-                  ┌────────────────┐
-                  │ DATA ANALYSIS  │
-                  │ PYTHON         │
-                  └───────┬────────┘
-                          │
-                          ▼
-                  ┌────────────────┐
-                  │ POSTGRESQL     │
-                  │ DATA MODEL     │
-                  └───────┬────────┘
-                          │
-                 ┌────────┴────────┐
-                 ▼                 ▼
-        ┌─────────────────┐  ┌─────────────┐
-        │ SQL ANALYSIS    │  │ POWER BI    │
-        │ BUSINESS QUERIES│  │ DASHBOARD   │
-        └─────────────────┘  └─────────────┘
-```
+## Technologies
 
-## **Technologies**
-```
-Python
-├── Pandas / Polars
-├── SQLAlchemy
-├── Matplotlib
-└── Jupyter NOtebook
+| Area | Tools |
+| --- | --- |
+| Data analysis | Python, Pandas, NumPy |
+| Visualization | Matplotlib |
+| Notebooks | Jupyter Notebook |
+| Relational analysis | PostgreSQL, SQLAlchemy |
+| Business intelligence | Power BI, DAX |
+| Version control | Git, GitHub |
 
-PostgreSQL
-├── Modelagem de dados
-├── JOINs
-├── CTEs
-└── Consultas analíticas
+## Repository Structure
 
-Power BI
-├── Modelagem
-├── DAX
-├── KPIs
-└── Dashboard
-```
-
-## **Repository Structure**
-
-```
+```text
 ecommerce-business-analytics/
 ├── data/
-│   ├── raw/                       # Original dataset files
+│   ├── raw/                       # Original source datasets
 │   │   ├── customers.csv
 │   │   ├── orders.csv
 │   │   ├── payments.csv
 │   │   └── products.csv
-│   └── processed/                 # Datasets generated by the project pipeline
-│       ├── clean_final_data.csv
+│   └── processed/                 # Datasets generated by the pipeline
+│       ├── clean_final_data.csv   # External reference, not used by the pipeline
 │       ├── customers_processed.csv
 │       ├── orders_analytical.csv
 │       ├── orders_processed.csv
 │       ├── payments_processed.csv
 │       └── products_processed.csv
-├── docs/                          # Project documentation
+├── docs/                          # Business and data documentation
 │   ├── business_questions.md
 │   └── data_dictionary.md
-├── notebooks/                     # Data analysis notebooks
+├── notebooks/                     # Exploratory project stages
 │   ├── 01_data_understanding.ipynb
 │   ├── 02_data_cleaning.ipynb
 │   └── 03_exploratory_data_analysis.ipynb
-├── scripts/                       # Reusable project validation scripts
+├── scripts/                       # Reusable project command-line scripts
 │   └── validate_data.py
 ├── .gitattributes
 ├── .gitignore
@@ -127,19 +102,35 @@ ecommerce-business-analytics/
 └── requirements.txt
 ```
 
-## **Dataset**
+## Data Layers
 
-### The dataset contains four main tables:
-* Customers
-* Orders
-* Payments
-* Products
+The raw datasets remain unchanged and provide the reproducible source layer.
 
-The raw data is preserved separately from processed data to ensure the original source remains unchanged throughout the project.
+The normalized processed datasets preserve the main entities and relationships:
 
-`/data/processed/` also includes `clean_final_data.csv` as an external reference file. It is intentionally ignored by the project pipeline. The analytical dataset used by this project is `orders_analytical.csv`, generated by the data cleaning and transformation notebook `02_data_cleaning.ipynb`.
+- `customers_processed.csv`
+- `orders_processed.csv`
+- `payments_processed.csv`
+- `products_processed.csv`
 
-## Data Validation
+The generated `orders_analytical.csv` combines order, customer, and product attributes with derived financial variables for exploratory analysis.
+
+The Kaggle-supplied `clean_final_data.csv` is retained as an external reference only. It is not used as an input or output of the project pipeline.
+
+## Running the Project
+
+Create and activate a virtual environment:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
 
 Run the processed-data validation from the project root:
 
@@ -149,5 +140,31 @@ venv/bin/python scripts/validate_data.py
 
 The validator checks file presence, column schemas, key uniqueness, dataset relationships, and financial formulas. Known data-quality issues that do not invalidate the pipeline are reported as warnings.
 
-## **Project Status**
-* 🚧 **In Progress...**
+## Documentation
+
+- [`docs/business_questions.md`](docs/business_questions.md) defines the questions, metrics, datasets, analyses, and expected decisions.
+- [`docs/data_dictionary.md`](docs/data_dictionary.md) defines dataset grain, columns, formulas, relationships, and limitations.
+- [`docs/local_setup.md`](docs/local_setup.md) explains environment setup, notebook execution, validation, and troubleshooting.
+- The notebooks document the reasoning and transformations used at each stage.
+
+## Current Status
+
+The project currently includes:
+
+- Raw and processed datasets.
+- Data understanding and data cleaning notebooks.
+- A generated analytical dataset.
+- Traceable business questions and data dictionary.
+- Processed-data validation.
+- Initial exploratory analysis for sales, products, customers, and payment reconciliation.
+
+The next development stage is to consolidate the final analytical metric definitions before implementing the SQL and Power BI layers.
+
+## Project Principles
+
+- Make it work.
+- Make it right.
+- Make it fast.
+- Prefer simple, explainable solutions.
+- Document assumptions and limitations.
+- Keep business questions connected to metrics, data, analysis, visualization, and decisions.
