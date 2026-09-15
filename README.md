@@ -152,13 +152,13 @@ This command checks metric scopes, AOV consistency, group shares, customer aggre
 
 - [`docs/business_questions.md`](docs/business_questions.md) defines the questions, metrics, datasets, analyses, and expected decisions.
 - [`docs/data_dictionary.md`](docs/data_dictionary.md) defines dataset grain, columns, formulas, relationships, and limitations.
-- [`docs/analytical_metrics.md`](docs/analytical_metrics.md) defines the authoritative metric contract shared by Pandas, SQLAlchemy, PostgreSQL, and Power BI.
+- [`docs/analytical_metrics.md`](docs/analytical_metrics.md) defines the authoritative metric contract shared by `Pandas`, `SQLAlchemy`, `PostgreSQL`, and `Power BI`.
 - [`docs/local_setup.md`](docs/local_setup.md) explains environment setup, notebook execution, validation, and troubleshooting.
 - The notebooks document the reasoning and transformations used at each stage.
 
 ## Current Status
 
-🚧 **In Progress**
+### 🚧 **In Progress**
 
 The project currently includes:
 
@@ -170,7 +170,7 @@ The project currently includes:
 - Initial exploratory analysis for sales, products, customers, and payment reconciliation.
 - Authoritative analytical metric definitions and executable metric validation.
 
-The next development stage is to implement the SQL and Power BI layers using the documented metric contract.
+The next development stage is to implement the `SQL` and `Power BI` layers using the documented metric contract.
 
 ## Project Principles
 
