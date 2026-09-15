@@ -158,6 +158,8 @@ This command checks metric scopes, AOV consistency, group shares, customer aggre
 
 ## Current Status
 
+🚧 **In Progress**
+
 The project currently includes:
 
 - Raw and processed datasets.
@@ -166,8 +168,9 @@ The project currently includes:
 - Traceable business questions and data dictionary.
 - Processed-data validation.
 - Initial exploratory analysis for sales, products, customers, and payment reconciliation.
+- Authoritative analytical metric definitions and executable metric validation.
 
-The next development stage is to consolidate the final analytical metric definitions before implementing the SQL and Power BI layers.
+The next development stage is to implement the SQL and Power BI layers using the documented metric contract.
 
 ## Project Principles
 
