@@ -162,6 +162,13 @@ The Payments dataset does not contain a monetary amount. Financial values must b
 
 The current raw snapshot contains orders whose `CustomerID` does not match a customer record. Analyses that require customer attributes must document how these unmatched orders are handled.
 
+## Referential Integrity Decisions
+
+These decisions apply to the PostgreSQL schema in [`sql/001_create_schema.sql`](../sql/001_create_schema.sql):
+
+- `orders.product_id` and `payments.order_id` are enforced as foreign keys, because both relationships have been validated as fully consistent (0 unmatched rows).
+- `orders.customer_id` is **not** enforced as a foreign key. Enforcing it would reject the 30 orders described above during data loading, which would silently remove real operational history to satisfy a database constraint. Instead, this relationship is validated at the application layer, and the exact unmatched count is reported by `scripts/validate_postgres_data.py` and `scripts/validate_metrics.py`. This preserves the same principle used during data cleaning: document exceptions rather than discard records.
+
 ## Data Quality and Scope Notes
 
 - Complete duplicate records were removed from the `Orders` dataset during cleaning.
