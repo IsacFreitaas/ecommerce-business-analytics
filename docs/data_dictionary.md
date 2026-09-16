@@ -160,7 +160,7 @@ The Payments dataset does not contain a monetary amount. Financial values must b
 | Products -> Orders | `ProductID` | One-to-many | A product can be associated with multiple orders. |
 | Orders -> Payments | `OrderID` | One-to-many in the model | An order can be associated with one or more payment records; this must be validated before aggregation. |
 
-The current raw snapshot contains orders whose `CustomerID` does not match a customer record. Analyses that require customer attributes must document how these unmatched orders are handled.
+The current raw snapshot contains orders whose `CustomerID` does not match a customer record. Analyses that require customer attributes must document how these unmatched orders are handled. All 30 of these orders reference a single invalid `CustomerID` value, not 30 different missing customers; this was confirmed with a dedicated SQL query during the PostgreSQL cross-validation (see `sql/002_business_queries.sql`).
 
 ## Referential Integrity Decisions
 
@@ -168,6 +168,10 @@ These decisions apply to the PostgreSQL schema in [`sql/001_create_schema.sql`](
 
 - `orders.product_id` and `payments.order_id` are enforced as foreign keys, because both relationships have been validated as fully consistent (0 unmatched rows).
 - `orders.customer_id` is **not** enforced as a foreign key. Enforcing it would reject the 30 orders described above during data loading, which would silently remove real operational history to satisfy a database constraint. Instead, this relationship is validated at the application layer, and the exact unmatched count is reported by `scripts/validate_postgres_data.py` and `scripts/validate_metrics.py`. This preserves the same principle used during data cleaning: document exceptions rather than discard records.
+
+### Scope precision lesson
+
+Cross-validating the Pandas and SQL implementations of the customer metrics (Q7/Q8) initially produced different `purchasing_customers` counts (9,940 in Pandas versus 9,939 in SQL). The cause was a scope mismatch, not a data error: the original Pandas validation dropped only rows with a missing `CustomerID`, which never happens in this dataset, so it still counted the 1 invalid `CustomerID` as a real customer. `purchasing_customers` and `repeat_customer_rate` are defined under the **full operational scope** in `docs/analytical_metrics.md`, and must additionally exclude orders whose customer does not exist in the customer dimension. Both `scripts/validate_metrics.py` and `sql/002_business_queries.sql` were corrected to apply this exclusion consistently, and now report identical results: 9,939 purchasing customers and a 96.80% repeat-customer rate.
 
 ## Data Quality and Scope Notes
 

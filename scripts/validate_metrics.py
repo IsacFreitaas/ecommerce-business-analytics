@@ -43,10 +43,15 @@ def validate_sales_metrics(analytical: pd.DataFrame) -> dict[str, float]:
 def validate_customer_metrics(
     analytical: pd.DataFrame, customers: pd.DataFrame
 ) -> dict[str, float]:
-    customer_data = analytical.dropna(subset=["CustomerID"]).copy()
-    customer_summary = customer_data.groupby("CustomerID").agg(
+    # Full operational scope for customer counting: every cleaned order,
+    # excluding only the orders whose CustomerID has no matching customer
+    # record (see docs/data_dictionary.md, "Referential Integrity Decisions").
+    matched_orders = analytical[
+        analytical["CustomerID"].isin(customers["CustomerID"])
+    ].copy()
+    customer_summary = matched_orders.groupby("CustomerID").agg(
         distinct_orders=("OrderID", "nunique"),
-        order_value=("OrderValue", "sum"),
+        order_value=("OrderValue", "sum"),  # sum() skips NaN: financial scope applied automatically
     )
     repeat_customers = customer_summary["distinct_orders"] > 1
     customer_share = customer_summary["order_value"] / customer_summary["order_value"].sum()
