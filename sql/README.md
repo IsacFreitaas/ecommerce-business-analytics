@@ -13,7 +13,7 @@ psql -d ecommerce_analytics -f sql/001_create_schema.sql
 | File | Purpose |
 | --- | --- |
 | `001_create_schema.sql` | Creates the four base tables and the `orders_analytical` view. |
-| `002_business_queries.sql` | (planned) SQL queries that reproduce the business questions answered with Pandas. |
+| `002_business_queries.sql` | SQL queries answering all twelve business questions from `docs/business_questions.md`. |
 
 ## Design Decisions
 

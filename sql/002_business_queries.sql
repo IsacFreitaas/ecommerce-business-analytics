@@ -4,9 +4,9 @@
 -- docs/business_questions.md, using the formulas and scopes defined in
 -- docs/analytical_metrics.md. Each query is commented line by line.
 --
--- Scope covered in this file: Q1, Q2, Q4, Q7, Q8, Q9, Q10, Q11, Q12.
--- Q3, Q5, and Q6 (period ranking, volume-vs-value rank, discount analysis)
--- are left for a future commit.
+-- Scope covered in this file: Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12.
+-- All twelve business questions from docs/business_questions.md now have a
+-- SQL implementation.
 --
 -- Scope precision note (Q7/Q8): customer-counting metrics (purchasing_customers,
 -- repeat_customers, repeat_customer_rate) use the full operational scope, so
@@ -48,6 +48,40 @@ ORDER BY order_year, order_month;                                        -- chro
 
 
 -- =============================================================
+-- Q3. Which periods contributed most to sales, and what explains it?
+-- =============================================================
+WITH monthly_performance AS (                                            -- CTE: one row per calendar month with all comparison metrics
+    SELECT
+        order_year,
+        order_month,
+        order_month_name,
+        COUNT(DISTINCT order_id)                        AS distinct_orders,      -- orders placed in that month
+        SUM(quantity)                                    AS units_sold,           -- units sold in that month
+        SUM(quantity) / COUNT(DISTINCT order_id)         AS units_per_order,       -- basket size for that month
+        AVG(discount)                                    AS average_discount,     -- average discount applied that month
+        SUM(order_value)                                 AS net_order_value,      -- monthly revenue after discount
+        SUM(order_value) / COUNT(DISTINCT order_id)      AS average_order_value   -- monthly AOV
+    FROM orders_analytical
+    WHERE order_value IS NOT NULL                                                 -- financial scope
+      AND order_date IS NOT NULL                                                  -- dated sales scope
+    GROUP BY order_year, order_month, order_month_name
+),
+ranked_months AS (                                                        -- CTE: rank months by revenue and compute each month's share
+    SELECT
+        *,
+        DENSE_RANK() OVER (ORDER BY net_order_value DESC)              AS sales_rank,   -- 1 = best month; DENSE_RANK avoids gaps on ties
+        net_order_value / SUM(net_order_value) OVER ()                 AS sales_share,  -- this month's revenue / total revenue
+        distinct_orders::NUMERIC / SUM(distinct_orders) OVER ()        AS order_share   -- this month's orders / total orders
+    FROM monthly_performance
+)
+SELECT *
+FROM ranked_months
+WHERE sales_rank <= 3                                                     -- the 3 strongest months
+   OR sales_rank > (SELECT MAX(sales_rank) FROM ranked_months) - 3        -- the 3 weakest months
+ORDER BY sales_rank;                                                      -- best months first, worst months last
+
+
+-- =============================================================
 -- Q4. Which categories generate the most sales value?
 -- =============================================================
 SELECT
@@ -60,6 +94,78 @@ FROM orders_analytical
 WHERE order_value IS NOT NULL                                           -- financial scope
 GROUP BY category
 ORDER BY category_order_value DESC;                                      -- highest-value categories first
+
+
+-- =============================================================
+-- Q5. Which products sell the most units, and does volume translate
+--     into sales value?
+-- =============================================================
+WITH product_value AS (                                                   -- CTE: product revenue (financial scope)
+    SELECT
+        product_id,
+        product_name,
+        category,
+        SUM(order_value) AS order_value
+    FROM orders_analytical
+    WHERE order_value IS NOT NULL
+    GROUP BY product_id, product_name, category
+),
+product_units AS (                                                        -- CTE: product volume (quantity scope, independent of order_value)
+    SELECT
+        product_id,
+        SUM(quantity) AS units_sold
+    FROM orders_analytical
+    WHERE quantity IS NOT NULL
+    GROUP BY product_id
+),
+ranked_products AS (                                                      -- CTE: rank each product twice, by value and by volume
+    SELECT
+        v.product_id,
+        v.product_name,
+        v.category,
+        v.order_value,
+        u.units_sold,
+        RANK() OVER (ORDER BY v.order_value DESC) AS sales_rank,          -- 1 = highest revenue
+        RANK() OVER (ORDER BY u.units_sold DESC)  AS volume_rank          -- 1 = highest unit volume
+    FROM product_value v
+    JOIN product_units u ON v.product_id = u.product_id                  -- inner join: every product has both a value and a volume
+)
+SELECT
+    *,
+    (volume_rank - sales_rank) AS rank_difference                        -- positive: sells more than its revenue rank suggests; negative: the opposite
+FROM ranked_products
+ORDER BY sales_rank;
+
+
+-- =============================================================
+-- Q6. How do discounts relate to sales performance?
+-- =============================================================
+WITH discount_bands AS (                                                  -- CTE: label every order with a discount band
+    SELECT
+        order_id,
+        quantity,
+        discount,
+        order_value,
+        CASE
+            WHEN discount = 0    THEN '0% (no discount)'                 -- no discount applied
+            WHEN discount <= 0.10 THEN '0-10%'                           -- small discount
+            WHEN discount <= 0.20 THEN '10-20%'                          -- moderate discount
+            ELSE '20%+'                                                  -- large discount
+        END AS discount_band
+    FROM orders_analytical
+    WHERE order_value IS NOT NULL                                        -- financial scope
+      AND discount IS NOT NULL                                           -- discount must be known to assign a band
+)
+SELECT
+    discount_band,
+    COUNT(DISTINCT order_id)                    AS distinct_orders,      -- orders in this discount band
+    AVG(discount)                                AS average_discount,     -- average discount actually applied within the band
+    SUM(quantity)                                AS units_sold,           -- units sold within the band
+    SUM(order_value)                             AS net_order_value,      -- revenue within the band
+    SUM(order_value) / COUNT(DISTINCT order_id)  AS average_order_value   -- AOV within the band
+FROM discount_bands
+GROUP BY discount_band
+ORDER BY average_discount;                                                -- ordered from no discount to the largest discount
 
 
 -- =============================================================
