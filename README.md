@@ -152,6 +152,15 @@ venv/bin/python scripts/validate_metrics.py
 
 This command checks metric scopes, AOV consistency, group shares, customer aggregation, payment coverage, and operational status shares.
 
+Create the PostgreSQL schema and load the processed datasets:
+
+```bash
+psql -d ecommerce_analytics -f sql/001_create_schema.sql
+venv/bin/python scripts/load_to_postgres.py
+```
+
+See [`sql/README.md`](sql/README.md) for the schema design decisions.
+
 ## Documentation
 
 - [`docs/business_questions.md`](docs/business_questions.md) defines the questions, metrics, datasets, analyses, and expected decisions.

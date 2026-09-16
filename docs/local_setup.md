@@ -74,6 +74,22 @@ Validate the metric definitions and their aggregation invariants:
 venv/bin/python scripts/validate_metrics.py
 ```
 
+## Load Data into PostgreSQL
+
+Create the schema (tables and the `orders_analytical` view):
+
+```bash
+psql -d ecommerce_analytics -f sql/001_create_schema.sql
+```
+
+Load the processed datasets into the tables:
+
+```bash
+venv/bin/python scripts/load_to_postgres.py
+```
+
+The load script truncates existing rows before inserting, so it can be run again safely after the processed CSVs change.
+
 ## Run the Notebooks
 
 Execute the notebooks in this order:
