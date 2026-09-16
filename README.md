@@ -99,7 +99,20 @@ ecommerce-business-analytics/
 │   ├── 02_data_cleaning.ipynb
 │   └── 03_exploratory_data_analysis.ipynb
 ├── scripts/                       # Reusable project command-line scripts
-│   └── validate_data.py
+│   ├── load_to_postgres.py
+│   ├── validate_data.py
+│   ├── validate_metrics.py
+│   └── validate_postgres_data.py
+├── sql/                           # PostgreSQL schema and business queries
+│   ├── 001_create_schema.sql
+│   ├── 002_business_queries.sql
+│   └── README.md
+├── src/                           # Reusable application code (Clean Architecture)
+│   └── ecommerce_analytics/
+│       ├── __init__.py
+│       ├── database.py
+│       └── load_data.py
+├── .env.example                   # Safe template for local PostgreSQL credentials
 ├── .gitattributes
 ├── .gitignore
 ├── README.md
@@ -152,6 +165,21 @@ venv/bin/python scripts/validate_metrics.py
 
 This command checks metric scopes, AOV consistency, group shares, customer aggregation, payment coverage, and operational status shares.
 
+Create the PostgreSQL schema and load the processed datasets:
+
+```bash
+psql -d ecommerce_analytics -f sql/001_create_schema.sql
+venv/bin/python scripts/load_to_postgres.py
+```
+
+Validate the PostgreSQL data against the processed CSVs:
+
+```bash
+venv/bin/python scripts/validate_postgres_data.py
+```
+
+See [`sql/README.md`](sql/README.md) for the schema design decisions.
+
 ## Documentation
 
 - [`docs/business_questions.md`](docs/business_questions.md) defines the questions, metrics, datasets, analyses, and expected decisions.
@@ -159,6 +187,15 @@ This command checks metric scopes, AOV consistency, group shares, customer aggre
 - [`docs/analytical_metrics.md`](docs/analytical_metrics.md) defines the authoritative metric contract shared by `Pandas`, `SQLAlchemy`, `PostgreSQL`, and `Power BI`.
 - [`docs/local_setup.md`](docs/local_setup.md) explains environment setup, notebook execution, validation, and troubleshooting.
 - The notebooks document the reasoning and transformations used at each stage.
+
+## SQL Analytical Model
+
+The PostgreSQL layer reproduces the core business questions with real SQL, cross-validated against the Pandas results:
+
+- [`sql/001_create_schema.sql`](sql/001_create_schema.sql) creates the `customers`, `products`, `orders`, and `payments` tables plus the `orders_analytical` view.
+- [`sql/002_business_queries.sql`](sql/002_business_queries.sql) answers Q1, Q2, Q4, and Q7 through Q12 using `GROUP BY`, `JOIN`, `CTE`s, and window functions.
+- `src/ecommerce_analytics/` holds the reusable connection (`database.py`) and loading (`load_data.py`) code shared by the scripts.
+- Cross-validating Pandas and SQL surfaced and fixed a real scope inconsistency in the customer metrics; see [`docs/data_dictionary.md`](docs/data_dictionary.md) for details.
 
 ## Current Status
 
@@ -173,8 +210,9 @@ The project currently includes:
 - Processed-data validation.
 - Initial exploratory analysis for sales, products, customers, and payment reconciliation.
 - Authoritative analytical metric definitions and executable metric validation.
+- A PostgreSQL analytical model (schema, data load, and business queries) cross-validated against Pandas.
 
-The next development stage is to implement the `SQL` and `Power BI` layers using the documented metric contract.
+The next development stage is to implement the `Power BI` semantic model and dashboard using the documented metric contract.
 
 ## Project Principles
 
