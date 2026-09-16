@@ -90,6 +90,14 @@ venv/bin/python scripts/load_to_postgres.py
 
 The load script truncates existing rows before inserting, so it can be run again safely after the processed CSVs change.
 
+Validate that PostgreSQL matches the processed CSVs:
+
+```bash
+venv/bin/python scripts/validate_postgres_data.py
+```
+
+This compares row counts per table, confirms the 30 documented unmatched customer orders, and cross-checks the `orders_analytical` view totals against the Pandas metric validation.
+
 ## Run the Notebooks
 
 Execute the notebooks in this order:

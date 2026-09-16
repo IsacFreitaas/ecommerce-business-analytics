@@ -159,6 +159,12 @@ psql -d ecommerce_analytics -f sql/001_create_schema.sql
 venv/bin/python scripts/load_to_postgres.py
 ```
 
+Validate the PostgreSQL data against the processed CSVs:
+
+```bash
+venv/bin/python scripts/validate_postgres_data.py
+```
+
 See [`sql/README.md`](sql/README.md) for the schema design decisions.
 
 ## Documentation
