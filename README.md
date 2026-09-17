@@ -193,7 +193,7 @@ See [`sql/README.md`](sql/README.md) for the schema design decisions.
 The PostgreSQL layer reproduces the core business questions with real SQL, cross-validated against the Pandas results:
 
 - [`sql/001_create_schema.sql`](sql/001_create_schema.sql) creates the `customers`, `products`, `orders`, and `payments` tables plus the `orders_analytical` view.
-- [`sql/002_business_queries.sql`](sql/002_business_queries.sql) answers Q1, Q2, Q4, and Q7 through Q12 using `GROUP BY`, `JOIN`, `CTE`s, and window functions.
+- [`sql/002_business_queries.sql`](sql/002_business_queries.sql) answers all twelve business questions (Q1-Q12) using `GROUP BY`, `JOIN`, `CTE`s, and window functions.
 - `src/ecommerce_analytics/` holds the reusable connection (`database.py`) and loading (`load_data.py`) code shared by the scripts.
 - Cross-validating Pandas and SQL surfaced and fixed a real scope inconsistency in the customer metrics; see [`docs/data_dictionary.md`](docs/data_dictionary.md) for details.
 
