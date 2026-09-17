@@ -180,6 +180,18 @@ venv/bin/python scripts/validate_postgres_data.py
 
 See [`sql/README.md`](sql/README.md) for the schema design decisions.
 
+## Continuous Integration
+
+The GitHub Actions workflow in [`.github/workflows/validation.yml`](.github/workflows/validation.yml) runs on every pull request and on pushes to `main`. It installs the project dependencies and validates:
+
+- Processed dataset schemas, keys, relationships, and financial formulas.
+- Analytical metric invariants.
+- Python syntax in `scripts/` and `src/`.
+- JSON structure for every notebook in `notebooks/`.
+- PostgreSQL schema, loaded data, analytical view, and SQL business queries.
+
+To make validation failures block merges, configure the repository's branch protection rules to require the `Python data validation` and `PostgreSQL analytical model validation` status checks before merging into `main`.
+
 ## Documentation
 
 - [`docs/business_questions.md`](docs/business_questions.md) defines the questions, metrics, datasets, analyses, and expected decisions.
