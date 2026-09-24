@@ -12,38 +12,30 @@ This project cannot generate the `.pbix` file directly: it is a binary format, n
 2. Open the Microsoft Store inside Windows and search for "Power BI Desktop", or download it from `https://www.microsoft.com/en-us/power-platform/products/power-bi/downloads`.
 3. Install and open Power BI Desktop. Close the initial sign-in prompt if it appears; a Microsoft account is not required to build a local report.
 
-## 2. Make PostgreSQL reachable from the Windows VM
+## 2. Access the processed CSV files from the Windows VM
 
-The PostgreSQL database currently runs on macOS (the Parallels host), not inside the Windows VM. Two options:
+This build uses the CSV fallback documented in `docs/powerbi_semantic_model.md` (Option B), instead of connecting live to the PostgreSQL database. This avoids cross-VM networking setup and keeps the report source files self-contained inside the repository.
 
-**Option A (recommended): Shared network access**
+1. Confirm Parallels Desktop has Shared Folders / Shared Network enabled by default (`Parallels Desktop -> your VM -> Configure -> Options -> Sharing`), so the Mac filesystem is reachable from Windows. This is enabled out of the box in most Parallels installations.
+2. In Windows, open File Explorer and locate the mapped network drive for the Mac home folder (commonly shown as `\\Mac\Home` or a `Z:\` drive under "This PC").
+3. Navigate to the repository's `data/processed/` folder from there, e.g. `\\Mac\Home\Desktop\ecommerce-business-analytics\data\processed\`.
+4. If the shared folder is not visible, enable it manually: `Parallels Desktop -> Actions -> Configure -> Options -> Sharing -> Share Mac`, then restart the VM.
 
-1. In Parallels, confirm the VM's network mode is `Shared Network` (default). This lets Windows reach the Mac host.
-2. On macOS, confirm PostgreSQL is listening for connections, not just local sockets. Check `postgresql.conf` (`brew --prefix postgresql@16` to find the path) for `listen_addresses = 'localhost'` and confirm `pg_hba.conf` allows connections from the Parallels virtual network range.
-3. From Windows, use the Mac host's IP address as seen from the VM (in Windows, `ipconfig` and look at the default gateway, which is usually the Mac host) instead of `localhost`.
-
-**Option B (simpler for a first attempt): Export a snapshot**
-
-If configuring cross-VM PostgreSQL access is too much friction for a first Power BI session, use the processed CSVs instead:
-
-1. Use `data/processed/orders_processed.csv`, `customers_processed.csv`, `products_processed.csv`, `payments_processed.csv` as the Power BI source (`Get Data -> Text/CSV`) instead of `Get Data -> PostgreSQL database`.
-2. Share the folder from macOS to the Windows VM (Parallels does this automatically for `/Users/<you>` under `Z:\` or a similar mapped drive by default).
-3. Document in the report which source was used; this project treats PostgreSQL as the primary source and CSV as the documented fallback (see `docs/powerbi_semantic_model.md`).
-
-Tell me which option you want to use, and I will give you the exact connection dialog values.
+The four files needed are `customers_processed.csv`, `orders_processed.csv`, `payments_processed.csv`, `products_processed.csv`. Do not use `clean_final_data.csv` (external reference, not part of the pipeline output).
 
 ## 3. Import the tables
 
-1. `Home -> Get Data -> PostgreSQL database` (or `Text/CSV` if using Option B).
-2. If using PostgreSQL: enter the server address and database name `ecommerce_analytics`; choose `Import` mode (not `DirectQuery`) when prompted.
-3. Select these four tables only: `customers`, `orders`, `payments`, `products`. Do **not** import `orders_analytical` (see `docs/powerbi_semantic_model.md` for why).
-4. Click `Transform Data` before loading, to open Power Query.
+1. `Home -> Get Data -> Text/CSV`.
+2. Browse to the shared `data/processed/` folder (see step 2) and select `customers_processed.csv`. Repeat `Get Data -> Text/CSV` for `orders_processed.csv`, `payments_processed.csv`, and `products_processed.csv`, one file at a time.
+3. For each file, confirm the column data types Power Query auto-detects look correct (dates as `Date`, ids/quantities as whole numbers, prices/discounts as decimal numbers) before clicking `Load`. Fix any mismatched type in the Power Query column header dropdown if needed.
+4. Do **not** import `clean_final_data.csv` (it is an external reference file, not part of the pipeline output; see `docs/powerbi_semantic_model.md`).
+5. Click `Transform Data` instead of `Load` directly, to open Power Query and rename the tables before the model is built.
 
 ## 4. Rename tables in Power Query
 
 Power BI report visuals read better with capitalized names. In Power Query (`Home -> Transform Data`):
 
-1. Rename `customers` -> `Customers`, `orders` -> `Orders`, `payments` -> `Payments`, `products` -> `Products` (right-click each query in the left panel -> `Rename`).
+1. Rename `customers_processed` -> `Customers`, `orders_processed` -> `Orders`, `payments_processed` -> `Payments`, `products_processed` -> `Products` (right-click each query in the left panel -> `Rename`).
 2. Do not rename individual columns; keep the lowercase `snake_case` column names (`customer_id`, `order_date`, etc.) so they match the DAX formulas in `docs/powerbi_measures.md` exactly.
 3. Click `Close & Apply`.
 
