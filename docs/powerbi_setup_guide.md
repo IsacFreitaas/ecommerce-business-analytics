@@ -52,7 +52,7 @@ The processed CSV headers use compact export names, while the semantic model and
 ## 6. Create the Calendar table
 
 1. `Modeling -> New table`, paste the `Calendar` DAX formula from `docs/powerbi_semantic_model.md`.
-2. Add the four calculated columns (`Year`, `Month Number`, `Month Name`, `Year-Month`) using `Modeling -> New column` while the `Calendar` table is selected.
+2. Add the four calculated columns (`Year`, `Month Number`, `Month Name`, `Year-Month`) using `Modeling -> New column` while the `Calendar` table is selected. Paste each formula exactly as shown in the semantic model document, without adding the table name before the column name.
 3. Right-click `Calendar` -> `Mark as date table`, select the `Date` column.
 4. In `Model` view, drag `Calendar[Date]` onto `Orders[order_date]`. Confirm cardinality `One to many`, direction `Single`.
 
@@ -62,7 +62,7 @@ The processed CSV headers use compact export names, while the semantic model and
 2. Select `Orders` table again, add the `Discount Band` calculated column.
 3. Select `Customers` table, add the `Customer Type` calculated column (uses the `Customer Distinct Orders` measure, so create the measures first, then come back for this column).
 4. `Home -> Enter Data`, create an empty table named `_Measures` with one throwaway column, load it, then delete that column afterward (this is the standard Power BI pattern for a measure-only table).
-5. Select `_Measures`, and for each formula in `docs/powerbi_measures.md`, use `Modeling -> New Measure`, paste the DAX, and press Enter.
+5. Select `_Measures`, and create each measure in `docs/powerbi_measures.md` with `Modeling -> New Measure`. Do not create `Financial Rows` as a measure; it is an optional calculated table and is not needed by the dashboard.
 
 ## 8. Validate the model
 

@@ -6,9 +6,9 @@ This document defines the DAX measures for the Power BI model described in [`doc
 
 All measures below assume the relationships and table names defined in the semantic model. Create them in a dedicated measure table named `_Measures` (an empty table added only to hold measures, a common Power BI convention to avoid attaching business logic to a physical data table).
 
-## Scope Helper Measures
+## Scope Helper Table and Columns
 
-These reproduce the analytical scopes defined in `docs/analytical_metrics.md` and are reused inside other measures.
+These reproduce the analytical scopes defined in `docs/analytical_metrics.md`. `Financial Rows` is an optional calculated table; `Sales` and `Order Value` are calculated columns on `Orders`.
 
 ```dax
 Financial Rows =

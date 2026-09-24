@@ -59,10 +59,10 @@ CALENDAR (
 Add these calculated columns to `Calendar`:
 
 ```dax
-Calendar[Year] = YEAR ( Calendar[Date] )
-Calendar[Month Number] = MONTH ( Calendar[Date] )
-Calendar[Month Name] = FORMAT ( Calendar[Date], "MMMM" )
-Calendar[Year-Month] = FORMAT ( Calendar[Date], "YYYY-MM" )
+Year = YEAR ( Calendar[Date] )
+Month Number = MONTH ( Calendar[Date] )
+Month Name = FORMAT ( Calendar[Date], "MMMM" )
+Year-Month = FORMAT ( Calendar[Date], "YYYY-MM" )
 ```
 
 Mark `Calendar` as a **Date table** (`Table tools -> Mark as date table`, using the `Date` column). Orders with a missing `order_date` will not join to any row in `Calendar` and will be excluded from time-based visuals, consistent with the documented "Dated Sales Scope."
