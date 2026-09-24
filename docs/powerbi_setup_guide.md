@@ -71,7 +71,8 @@ Follow the "Model Validation Checklist" in `docs/powerbi_semantic_model.md` and 
 1. Add a blank card visual with `[Distinct Orders]`, no filters: expect `50000`.
 2. Add a card with `[Unmatched Customer Orders]`: expect `30`.
 3. Add a card with `[Net Order Value]`: expect `3480613.75`.
-4. Add a card with `[Purchasing Customers]`: expect `9939`.
+4. Add a card with `[Average Order Value]`: expect approximately `69.61` when all 50,000 operational orders are counted, or approximately `70.03` when the visual is restricted to the 49,700 financial rows with non-missing quantity and discount.
+5. Add a card with `[Purchasing Customers]`: expect `9939`.
 
 If any of these do not match, stop and check the relationship cardinality and the calculated-column formulas before building any dashboard page.
 

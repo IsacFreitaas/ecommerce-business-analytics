@@ -258,7 +258,7 @@ Before using any measure in a visual:
 2. Confirm `Unmatched Customer Orders` returns `30`.
 3. Confirm `Distinct Orders` (no filters) returns `50000`.
 4. Confirm `Net Order Value` (no filters) returns `3480613.75`.
-5. Confirm `Average Order Value` (no filters) returns approximately `70.03`.
+5. Confirm `Average Order Value` returns approximately `69.61` when calculated as total net value divided by all 50,000 operational orders; the financial-scope value is approximately `70.03` after excluding the 300 rows with missing quantity or discount.
 6. Confirm `Purchasing Customers` (no filters) returns `9939` and `Repeat Customer Rate` returns approximately `0.9680`.
 
 ## TODO
