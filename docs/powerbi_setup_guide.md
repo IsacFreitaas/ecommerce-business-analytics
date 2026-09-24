@@ -29,13 +29,17 @@ Do not use `clean_final_data.csv`; it is an external reference file and is not p
 4. Do **not** import `clean_final_data.csv` (it is an external reference file, not part of the pipeline output; see `docs/powerbi_semantic_model.md`).
 5. Click `Transform Data` instead of `Load` directly, to open Power Query and rename the tables before the model is built.
 
-## 4. Rename tables in Power Query
+## 4. Rename tables and columns in Power Query
 
-Power BI report visuals read better with capitalized names. In Power Query (`Home -> Transform Data`):
+The processed CSV headers use compact export names, while the semantic model and DAX use the documented lowercase `snake_case` names. Apply this mapping in Power Query (`Home -> Transform Data`) before clicking `Close & Apply`.
 
-1. Rename `customers_processed` -> `Customers`, `orders_processed` -> `Orders`, `payments_processed` -> `Payments`, `products_processed` -> `Products` (right-click each query in the left panel -> `Rename`).
-2. Do not rename individual columns; keep the lowercase `snake_case` column names (`customer_id`, `order_date`, etc.) so they match the DAX formulas in `docs/powerbi_measures.md` exactly.
-3. Click `Close & Apply`.
+1. Rename the queries: `customers_processed` -> `Customers`, `orders_processed` -> `Orders`, `payments_processed` -> `Payments`, `products_processed` -> `Products` (right-click each query in the left panel -> `Rename`).
+2. In `Customers`, rename `CustomerID` -> `customer_id`, `Age` -> `age`, `City` -> `city`, `SignupDate` -> `signup_date`, and `CustomerSegment` -> `customer_segment`.
+3. In `Orders`, rename `OrderID` -> `order_id`, `CustomerID` -> `customer_id`, `OrderDate` -> `order_date`, `ProductID` -> `product_id`, `Quantity` -> `quantity`, `Discount` -> `discount`, `PaymentMethod` -> `payment_method`, `Status` -> `status`, `OrderYear` -> `order_year`, `OrderMonth` -> `order_month`, and `OrderMonthName` -> `order_month_name`.
+4. In `Payments`, rename `PaymentID` -> `payment_id`, `OrderID` -> `order_id`, `PaymentDate` -> `payment_date`, and `PaymentStatus` -> `payment_status`.
+5. In `Products`, rename `ProductID` -> `product_id`, `ProductName` -> `product_name`, `Category` -> `category`, and `UnitPrice` -> `unit_price`.
+6. Confirm these data types before loading: IDs and quantities as `Whole number`; `age` as `Whole number`; `discount` and `unit_price` as `Decimal number`; `order_date`, `signup_date`, and `payment_date` as `Date`; and year/month helper fields as `Whole number` or `Text` according to their names.
+7. Click `Close & Apply`.
 
 ## 5. Build the relationships
 
