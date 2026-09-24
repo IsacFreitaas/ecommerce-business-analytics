@@ -90,8 +90,14 @@ ecommerce-business-analytics/
 │       ├── payments_processed.csv
 │       └── products_processed.csv
 ├── docs/                          # Business and data documentation
+│   ├── analytical_metrics.md
 │   ├── business_questions.md
-│   └── data_dictionary.md
+│   ├── data_dictionary.md
+│   ├── local_setup.md
+│   ├── powerbi_dashboard_specification.md
+│   ├── powerbi_measures.md
+│   ├── powerbi_semantic_model.md
+│   └── powerbi_setup_guide.md
 ├── images/                        # Documentation images
 │   └── project_banner.webp
 ├── notebooks/                     # Exploratory project stages
@@ -209,6 +215,15 @@ The PostgreSQL layer reproduces the core business questions with real SQL, cross
 - `src/ecommerce_analytics/` holds the reusable connection (`database.py`) and loading (`load_data.py`) code shared by the scripts.
 - Cross-validating Pandas and SQL surfaced and fixed a real scope inconsistency in the customer metrics; see [`docs/data_dictionary.md`](docs/data_dictionary.md) for details.
 
+## Power BI Analytical Model
+
+The business intelligence layer reuses the PostgreSQL schema and the same metric contract as Pandas and SQL:
+
+- [`docs/powerbi_semantic_model.md`](docs/powerbi_semantic_model.md) defines the star-schema model, table relationships, and the generated calendar dimension.
+- [`docs/powerbi_measures.md`](docs/powerbi_measures.md) defines every DAX measure, matching the formulas in [`docs/analytical_metrics.md`](docs/analytical_metrics.md).
+- [`docs/powerbi_dashboard_specification.md`](docs/powerbi_dashboard_specification.md) defines the five dashboard pages, their visuals, and the business question each visual answers.
+- [`docs/powerbi_setup_guide.md`](docs/powerbi_setup_guide.md) explains how to build the report step by step in Power BI Desktop.
+
 ## Current Status
 
 ### 🚧 **In Progress**
@@ -223,8 +238,10 @@ The project currently includes:
 - Initial exploratory analysis for sales, products, customers, and payment reconciliation.
 - Authoritative analytical metric definitions and executable metric validation.
 - A PostgreSQL analytical model (schema, data load, and business queries) cross-validated against Pandas.
+- An automated CI validation workflow that runs data, metric, syntax, and PostgreSQL checks on every pull request.
+- A documented Power BI semantic model, DAX measure catalog, and dashboard specification, ready to be built in Power BI Desktop.
 
-The next development stage is to implement the `Power BI` semantic model and dashboard using the documented metric contract.
+The next development stage is to build the Power BI report following the setup guide and then write the final portfolio documentation.
 
 ## Project Principles
 
