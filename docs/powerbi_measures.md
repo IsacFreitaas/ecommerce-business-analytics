@@ -145,15 +145,6 @@ SWITCH (
 
 ## Customer Measures (Q7, Q8, Q9)
 
-```dax
-Purchasing Customers =
-CALCULATE (
-    DISTINCTCOUNT ( Orders[customer_id] ),
-    NOT ISBLANK ( Orders[customer_id] ),
-    Orders[customer_id] <> BLANK ()
-)
-```
-
 Power BI already excludes unmatched `customer_id` values from any visual that also uses a `Customers` column (see the semantic model doc), but `Purchasing Customers` must return the correct total even in visuals with **no** `Customers` field present. Use this explicit filter, reproducing the SQL `EXISTS` check from Q7:
 
 ```dax
