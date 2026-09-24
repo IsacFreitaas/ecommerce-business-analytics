@@ -2,31 +2,29 @@
 
 ## Purpose
 
-Step-by-step instructions to build the report described in [`docs/powerbi_semantic_model.md`](powerbi_semantic_model.md), [`docs/powerbi_measures.md`](powerbi_measures.md), and [`docs/powerbi_dashboard_specification.md`](powerbi_dashboard_specification.md), for a first-time Power BI user running Windows through Parallels Desktop on macOS.
+Step-by-step instructions to build the report described in [`docs/powerbi_semantic_model.md`](powerbi_semantic_model.md), [`docs/powerbi_measures.md`](powerbi_measures.md), and [`docs/powerbi_dashboard_specification.md`](powerbi_dashboard_specification.md) in Power BI Desktop.
 
-This project cannot generate the `.pbix` file directly: it is a binary format, not a text file, so it must be built manually inside Power BI Desktop following this guide.
+The `.pbix` report is built manually in Power BI Desktop from the versioned processed datasets and the specifications in this repository.
 
-## 1. Install Power BI Desktop (inside the Windows VM)
+## 1. Install Power BI Desktop
 
-1. Start the Windows virtual machine in Parallels Desktop.
-2. Open the Microsoft Store inside Windows and search for "Power BI Desktop", or download it from `https://www.microsoft.com/en-us/power-platform/products/power-bi/downloads`.
-3. Install and open Power BI Desktop. Close the initial sign-in prompt if it appears; a Microsoft account is not required to build a local report.
+1. Download Power BI Desktop from the Microsoft Store or from `https://www.microsoft.com/en-us/power-platform/products/power-bi/downloads`.
+2. Install and open Power BI Desktop. A Microsoft account is not required to build and save a local report.
 
-## 2. Access the processed CSV files from the Windows VM
+## 2. Locate the processed datasets
 
-This build uses the CSV fallback documented in `docs/powerbi_semantic_model.md` (Option B), instead of connecting live to the PostgreSQL database. This avoids cross-VM networking setup and keeps the report source files self-contained inside the repository.
+This build uses the processed CSV files committed under `data/processed/`. Using these files makes the report reproducible without requiring PostgreSQL or a live database connection.
 
-1. Confirm Parallels Desktop has Shared Folders / Shared Network enabled by default (`Parallels Desktop -> your VM -> Configure -> Options -> Sharing`), so the Mac filesystem is reachable from Windows. This is enabled out of the box in most Parallels installations.
-2. In Windows, open File Explorer and locate the mapped network drive for the Mac home folder (commonly shown as `\\Mac\Home` or a `Z:\` drive under "This PC").
-3. Navigate to the repository's `data/processed/` folder from there, e.g. `\\Mac\Home\Desktop\ecommerce-business-analytics\data\processed\`.
-4. If the shared folder is not visible, enable it manually: `Parallels Desktop -> Actions -> Configure -> Options -> Sharing -> Share Mac`, then restart the VM.
+1. Download or clone the repository.
+2. Open the repository's `data/processed/` folder in File Explorer.
+3. Use these four files as the Power BI sources: `customers_processed.csv`, `orders_processed.csv`, `payments_processed.csv`, and `products_processed.csv`.
 
-The four files needed are `customers_processed.csv`, `orders_processed.csv`, `payments_processed.csv`, `products_processed.csv`. Do not use `clean_final_data.csv` (external reference, not part of the pipeline output).
+Do not use `clean_final_data.csv`; it is an external reference file and is not part of the pipeline output.
 
 ## 3. Import the tables
 
 1. `Home -> Get Data -> Text/CSV`.
-2. Browse to the shared `data/processed/` folder (see step 2) and select `customers_processed.csv`. Repeat `Get Data -> Text/CSV` for `orders_processed.csv`, `payments_processed.csv`, and `products_processed.csv`, one file at a time.
+2. Browse to `data/processed/` and select `customers_processed.csv`. Repeat `Get Data -> Text/CSV` for `orders_processed.csv`, `payments_processed.csv`, and `products_processed.csv`, one file at a time.
 3. For each file, confirm the column data types Power Query auto-detects look correct (dates as `Date`, ids/quantities as whole numbers, prices/discounts as decimal numbers) before clicking `Load`. Fix any mismatched type in the Power Query column header dropdown if needed.
 4. Do **not** import `clean_final_data.csv` (it is an external reference file, not part of the pipeline output; see `docs/powerbi_semantic_model.md`).
 5. Click `Transform Data` instead of `Load` directly, to open Power Query and rename the tables before the model is built.
