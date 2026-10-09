@@ -248,6 +248,16 @@ CALCULATE (
 )
 ```
 
+```dax
+Excluded Financial Rows =
+CALCULATE ( COUNTROWS ( Orders ), ISBLANK ( Orders[Order Value] ) )
+```
+
+```dax
+Missing Order Dates =
+CALCULATE ( COUNTROWS ( Orders ), ISBLANK ( Orders[order_date] ) )
+```
+
 `Unmatched Customer Orders` must equal `30` with no filters applied; it is the Power BI equivalent of the SQL anti-join used to confirm this count in `docs/data_dictionary.md`.
 
 ## Validation Rules

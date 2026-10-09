@@ -43,11 +43,11 @@ The processed CSV headers use compact export names, while the semantic model and
 
 ## 5. Build the relationships
 
-1. Go to the `Model` view (left sidebar icon that looks like connected boxes).
-2. Drag `Products[product_id]` onto `Orders[product_id]`.
-3. Drag `Customers[customer_id]` onto `Orders[customer_id]`.
-4. Drag `Orders[order_id]` onto `Payments[order_id]`.
-5. Double-click each new relationship line and confirm cardinality is `One to many` and cross-filter direction is `Single`, matching the table in `docs/powerbi_semantic_model.md`.
+1. Open the Model view: it is the third icon in the left vertical bar (Report, Table, Model). Hover over it to confirm the tooltip reads `Model view`.
+2. On the `Modeling` tab, select `Manage relationships` > `New`, or drag the key column from one table onto the matching column in the other table.
+3. Create `Products[product_id]` -> `Orders[product_id]`, `Customers[customer_id]` -> `Orders[customer_id]`, and `Orders[order_id]` -> `Payments[order_id]`.
+4. For each relationship, set `Cardinality` to `One to many (1:*)`, `Cross filter direction` to `Single`, and keep `Make this relationship active` checked. Do not accept Power BI's automatic `Both` direction.
+5. Confirm the relationships against the table in `docs/powerbi_semantic_model.md`.
 
 ## 6. Create the Calendar table
 
